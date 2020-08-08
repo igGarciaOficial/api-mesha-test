@@ -9,13 +9,11 @@ use App\User;
 class UserController extends Controller
 {
 
-    public function index()
-    {
+    public function index(){
         return User::paginate(10);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         try{
 
             User::create( $request->all() );
@@ -31,13 +29,11 @@ class UserController extends Controller
         }
     }
     
-    public function show(Request $request, User $id)
-    {
+    public function show(Request $request, User $id){
         return response()->json($id);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id){
         $userTarget = User::findOrFail($id);
         $userTarget->update($request->all());
         
