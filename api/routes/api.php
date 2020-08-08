@@ -19,5 +19,5 @@ Route::prefix('user')->group(function()
 
     Route::delete('/{id}', 'UserController@destroy');
 
-    Route::put('/turnAEmployeer/{solicitante}/{final}', 'UserController@turnUserAEmployeer');
+    Route::post('/createEmployeer', 'UserController@createEmployeer');
 });

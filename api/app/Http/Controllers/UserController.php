@@ -54,24 +54,33 @@ class UserController extends Controller
         }
     }
 
-    public function turnUserAEmployeer($requestId, $idTarget){
-        try {
-            $requestId = User::find($requestId);
-            $idTarget = User::find($idTarget);
+    public function createEmployeer(Request $request){
+        
+        $requestId = User::find($request->requesterId);
 
-            if (!$requestId || !$idTarget)
-                return Response(['ERROR' => 'Usuário solicitante ou usuário final não encontrado.'], 500);
+        if (!$requestId)
+            return Response(['ERROR' => 'Usuário solicitante não encontrado.'], 500);
 
-            elseif ($requestId->type == 'employeer') {
-                $idTarget->update(['type'=>'employeer']);
+        elseif ($requestId->type == 'employeer') {    
+            try {
+                User::create([
+                    "name" => $request->name,
+                    "email" => $request->email,
+                    "born" => $request->born,
+                    "phone" => $request->phone,
+                    "type" => "employeer"
+                ]);
+                
+                return Response(['data' => "Funcionário criado com sucesso."], 201);
 
-                return Response(['data' => "Usuário {$idTarget->name} é um funcionário agora."], 201);
-            }else{
-                return Response(['ERROR' => 'Usuário solicitante não tem permissão para esta ação.'], 403);
+            } catch (\Exception $th) {
+                return Response(['ERROR' => "Erro ao criar usuário:{$th->getMessage()}"], 500);
             }
-        } catch (\Exception $th) {
-            return Response(['ERROR' => 'Usuário solicitante ou usuário final não encontrado.'], 500);
+        
+        }else{
+            return Response(['ERROR' => 'Usuário solicitante não tem permissão para esta ação.'], 403);
         }
 
+        
     }
 }
