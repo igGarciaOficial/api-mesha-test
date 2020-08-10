@@ -86,8 +86,8 @@ class UserController extends Controller
     }
 
     public function getUsersByType($type='patient'){
-        $res = User::where('type', '=', $type)->paginate(10);
-        return Response(['data' => $res->items()], 200);
+        $res = \DB::table('users')->select('id', 'name', 'email')->where('type', '=', $type)->paginate(10);
+        return Response(['data' => $res], 200);
     }
 
     public function receiveImageUploaded(Request $request, $id){
