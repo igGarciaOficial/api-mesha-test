@@ -15,8 +15,14 @@ class UserController extends Controller
 
     public function store(Request $request){
         try{
+            $request = json_decode($request->getContent());
 
-            User::create( $request->all() );
+            User::create( [
+                "name" => $request->name,
+                "email" => $request->email,
+                "phone" => $request->phone,
+                "born" => $request->born
+            ]);
             return Response(['data' => 'Usuário criado com sucesso!'], 201);
             
         }catch(\Exception $e){
