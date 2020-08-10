@@ -35,8 +35,8 @@ class UserController extends Controller
         }
     }
     
-    public function show(Request $request, User $id){
-        return response()->json($id);
+    public function show(Request $request, $id){
+        return User::find($id);
     }
 
     public function update(Request $request, $id){
