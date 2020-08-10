@@ -22,7 +22,7 @@ class AtendimentoController extends Controller
         if(!$requesterUser)
             return Response(['Error'=>'Usuário solicitante não encontrado.'], 500);
 
-        elseif($requesterUser->type == 'patient')
+        if($requesterUser->type == 'patient')
             return Response(['Error' => 'Operação negada para usuários do tipo paciente!', 403]);
         
         else {
@@ -33,7 +33,7 @@ class AtendimentoController extends Controller
 
                 $outerComplaints = $request->outherComplaints;
                 
-                if($outerComplaints){
+                if(count($outerComplaints) && $outerComplaints[0] != null){
                     $listaComplaints2 = array();
 
                     foreach($outerComplaints as $comp){
@@ -49,11 +49,17 @@ class AtendimentoController extends Controller
                     "employeer" => $request->employeer
                 ]);
 
-                $this->assignComplaints($request->complaints, $atendimento->id);
+                if(count($request->complaints) && $request->complaints[0]!=null){
+                    $this->assignComplaints($request->complaints, $atendimento->id);
+                }
+
                 if (count($listaComplaints2)>0 && $listaComplaints2[0]!=null){
                     $this->assignComplaints($listaComplaints2, $atendimento->id);
                 }
-                $this->assignProcedures($request->procedures, $atendimento->id);
+
+                if (count($request->procedures) && $request->procedures[0] != null){
+                    $this->assignProcedures($request->procedures, $atendimento->id);
+                }
 
                 \DB::commit();
                 return Response(['data' => 'Atendimento criado com sucesso.', 'id' => $atendimento->id], 201);
