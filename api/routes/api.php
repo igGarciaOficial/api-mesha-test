@@ -38,3 +38,7 @@ Route::prefix('attendance')->group(function()
 
     Route::get('/{id}', 'AtendimentoController@getAttendenceById');
 });
+
+Route::get('complaints', 'QueixasController@index');
+
+Route::get('procedures', 'ProcedimentoMedicoController@index');

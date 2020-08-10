@@ -33,11 +33,13 @@ class AtendimentoController extends Controller
 
                 $outerComplaints = $request->outherComplaints;
                 
-                $listaComplaints2 = array();
+                if($outerComplaints){
+                    $listaComplaints2 = array();
 
-                foreach($outerComplaints as $comp){
-                    $queixa = QueixasController::create($comp);
-                    array_push($listaComplaints2, $queixa);
+                    foreach($outerComplaints as $comp){
+                        $queixa = QueixasController::create($comp);
+                        array_push($listaComplaints2, $queixa);
+                    }
                 }
 
                 $atendimento = Atendimento::create([
@@ -48,7 +50,9 @@ class AtendimentoController extends Controller
                 ]);
 
                 $this->assignComplaints($request->complaints, $atendimento->id);
-                $this->assignComplaints($listaComplaints2, $atendimento->id);
+                if (count($listaComplaints2)>0 && $listaComplaints2[0]!=null){
+                    $this->assignComplaints($listaComplaints2, $atendimento->id);
+                }
                 $this->assignProcedures($request->procedures, $atendimento->id);
 
                 \DB::commit();
@@ -56,7 +60,8 @@ class AtendimentoController extends Controller
                 
             } catch (\Throwable $th) {
                 \DB::rollback();
-                return Response(['Error', 'Erro ao criar atendimento:'. $th->getMessage()], 500);
+                dd($request->complaints);
+                return Response(['Error', 'Erro ao criar atendimento:' . $th->getMessage()], 500);
             }
         }
 
@@ -84,27 +89,24 @@ class AtendimentoController extends Controller
         return Response(['data' => $result, 'proceduresTime' => $duration], 200);
     }
 
-    public function destroy($id)
-    {
-        // Avaliar como seria o delete de atendimento
-    }
+    public function assignComplaints($complaints, $idAtendimento)
+    {  
+        $tam = count($complaints);
+        for($i=0;$i<$tam;$i++){
+           try { 
 
-    public function assignComplaints(Array $complaints, $idAtendimento)
-    { 
-        foreach ($complaints as $complaint) {
-            try {
-                RelacionamentoQueixasAtendimentoController::createRelationship($complaint->id, $idAtendimento);
+                RelacionamentoQueixasAtendimentoController::createRelationship($complaints[$i], $idAtendimento);
             } catch (\Throwable $th) {
                 throw $th;
-            }
+            } 
         }
     }
 
-    public function assignProcedures(Array $procedures, $idAtendimento)
+    public function assignProcedures($procedures, $idAtendimento)
     {
         foreach ($procedures as $proc) {
             try {
-                RelacionamentoProcedimentoMedicosController::createRelationshipWithAttendance($proc->id, $idAtendimento);
+                RelacionamentoProcedimentoMedicosController::createRelationshipWithAttendance($proc, $idAtendimento);
             } catch (\Throwable $th) {
                 throw $th;
             }
