@@ -77,6 +77,10 @@ class UserController extends Controller
             return Response(['ERROR' => 'Usuário solicitante não tem permissão para esta ação.'], 403);
         }
 
-        
+    }
+
+    public function getUsersByType($type='patient'){
+        $res = User::where('type', '=', $type)->paginate(10);
+        return Response(['data' => $res->items()], 200);
     }
 }

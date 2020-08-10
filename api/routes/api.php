@@ -21,3 +21,20 @@ Route::prefix('user')->group(function()
 
     Route::post('/createEmployeer', 'UserController@createEmployeer'); 
 });
+
+Route::prefix('patient')->group(function(){
+    Route::get('/{type?}', 'UserController@getUsersByType');
+});
+
+Route::prefix('attendance')->group(function()
+{
+    Route::get('/', 'AtendimentoController@index');
+
+    Route::get('/patient/{id}', 'AtendimentoController@show');
+
+    Route::post('/', 'AtendimentoController@store');
+
+    Route::get('/duration/{idAtendimento}', 'RelacionamentoProcedimentoMedicosController@getTotalTime');
+
+    Route::get('/{id}', 'AtendimentoController@getAttendenceById');
+});
