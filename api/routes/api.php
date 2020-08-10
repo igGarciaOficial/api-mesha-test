@@ -20,6 +20,8 @@ Route::prefix('user')->group(function()
     Route::delete('/{id}', 'UserController@destroy');
 
     Route::post('/createEmployeer', 'UserController@createEmployeer'); 
+
+    Route::post('/imgUserUpload/{id}', 'UserController@receiveImageUploaded');
 });
 
 Route::prefix('patient')->group(function(){
@@ -41,4 +43,11 @@ Route::prefix('attendance')->group(function()
 
 Route::get('complaints', 'QueixasController@index');
 
-Route::get('procedures', 'ProcedimentoMedicoController@index');
+
+
+Route::prefix('procedures')->group(function()
+{
+    Route::get('/', 'ProcedimentoMedicoController@index');
+
+    Route::post('/new', 'ProcedimentoMedicoController@store');
+});

@@ -18,8 +18,14 @@ class ProcedimentoMedicoController extends Controller
     public function store(Request $request)
     {
         try {
-            ProcedimentoMedico::create($request->all());
-            return Response(['data', 'Procedimento criado com sucesso!'], 201);
+            $procedimento = ProcedimentoMedico::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'duration'=>$request->duration,
+                'price'=>$request->price
+            ]);
+            
+            return Response(['data', 'Procedimento criado com sucesso!', 'id' => $procedimento->id], 201);
         } catch (\Exception $th) {
             return Response(['ERROR', 'Erro ao criar procedimento.'], 500);
         }

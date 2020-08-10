@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->length(11);
             $table->enum('type', ['employeer', 'patient'])->default('patient');
             $table->string('password')->nullable();
+            $table->binary('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -17,13 +17,13 @@ class UserController extends Controller
         try{
             $request = json_decode($request->getContent());
 
-            User::create( [
+            $user = User::create( [
                 "name" => $request->name,
                 "email" => $request->email,
                 "phone" => $request->phone,
                 "born" => $request->born
             ]);
-            return Response(['data' => 'Usuário criado com sucesso!'], 201);
+            return Response(['data' => 'Usuário criado com sucesso!', 'id' => $user->id], 201);
             
         }catch(\Exception $e){
             if($e->errorInfo[0] == '23505'){
@@ -88,5 +88,25 @@ class UserController extends Controller
     public function getUsersByType($type='patient'){
         $res = User::where('type', '=', $type)->paginate(10);
         return Response(['data' => $res->items()], 200);
+    }
+
+    public function receiveImageUploaded(Request $request, $id){
+        
+        try{
+            $user = User::find($id);
+
+            if($user){
+                //Armazendo imagem na pasta 'avatars';
+                $path = $request->file('avatar')->store('avatars');
+                
+                $user->update([
+                    'avatar' => $path
+                ]);
+            }
+
+
+        }catch(\Exception $e){
+            return Response(['ERROR'=>'Usuário não encontrado'], 404);
+        }
     }
 }
