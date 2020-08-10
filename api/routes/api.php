@@ -22,6 +22,8 @@ Route::prefix('user')->group(function()
     Route::post('/createEmployeer', 'UserController@createEmployeer'); 
 
     Route::post('/imgUserUpload/{id}', 'UserController@receiveImageUploaded');
+
+    Route::post('/imgPersonalizateUpload/{nome}', 'UserController@receivePersonalizedImgUpload');
 });
 
 Route::prefix('patient')->group(function(){
